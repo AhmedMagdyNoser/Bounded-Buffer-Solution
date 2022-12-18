@@ -12,7 +12,7 @@ public class BufferQueue {
     Semaphore mutex;
     Semaphore full;
     Semaphore empty;
-
+    
     public BufferQueue(int size) { // constructor
         this.size = size;
         array = new int[size];
@@ -23,7 +23,7 @@ public class BufferQueue {
         out = 0;
     }
 
-    public void add(int ItemToAdd) {
+    public void add(int ItemToAdd) { // Produce
 
         // wait(empty)
         try {
@@ -41,7 +41,8 @@ public class BufferQueue {
         array[in] = ItemToAdd;
         in = (in + 1) % size;
         System.out.println("\u001B[32m" + Thread.currentThread().getName() + " Added " + ItemToAdd); // "\u001B[32m" Just for coloring
-
+        Main.list.add(Thread.currentThread().getName() + " Added " + ItemToAdd);
+        
         // signal(mutex)
         mutex.release();
 
@@ -50,7 +51,7 @@ public class BufferQueue {
 
     }
 
-    public int remove() {
+    public int remove() { // Consume
 
         int RemovedItem;
 
@@ -70,6 +71,7 @@ public class BufferQueue {
         RemovedItem = array[out];
         out = (out + 1) % size;
         System.out.println(Thread.currentThread().getName() + " Removed " + RemovedItem);
+        Main.list.add(Thread.currentThread().getName() + " Removed " + RemovedItem);
 
         // signal(mutex)
         mutex.release();
